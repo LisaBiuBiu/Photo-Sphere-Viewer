@@ -5,8 +5,8 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <title>PhotoSphereViewer - markers demo</title>
 
-        <link rel="stylesheet" href="/dist/core/index.css" />
-        <link rel="stylesheet" href="/dist/markers-plugin/index.css" />
+        <link rel="stylesheet" href="/packages/core/dist/index.css" />
+        <link rel="stylesheet" href="/packages/markers-plugin/dist/index.css" />
         <link rel="stylesheet" href="style.css" />
 
         <style>
@@ -97,7 +97,7 @@
         </svg>
 
         <custom-marker id="custom-marker-element" style="display: none">
-            <img src="https://photo-sphere-viewer-data.netlify.app/assets/sphere-small.jpg">
+            <img src="https://photo-sphere-viewer-data.netlify.app/assets/sphere-small.jpg" id="imgDom">
             <h2>Custom element</h2>
             <p>Use an existing element as marker. This WebComponent contains it's own animations and tooltip.</p>
         </custom-marker>
@@ -106,10 +106,10 @@
             {
                 "imports": {
                     "three": "/node_modules/three/build/three.module.js",
-                    "@photo-sphere-viewer/core": "/dist/core/index.module.js",
-                    "@photo-sphere-viewer/gyroscope-plugin": "/dist/gyroscope-plugin/index.module.js",
-                    "@photo-sphere-viewer/markers-plugin": "/dist/markers-plugin/index.module.js",
-                    "@photo-sphere-viewer/stereo-plugin": "/dist/stereo-plugin/index.module.js"
+                    "@photo-sphere-viewer/core": "/packages/core/dist/index.module.js",
+                    "@photo-sphere-viewer/gyroscope-plugin": "/packages/gyroscope-plugin/dist/index.module.js",
+                    "@photo-sphere-viewer/markers-plugin": "/packages/markers-plugin/dist/index.module.js",
+                    "@photo-sphere-viewer/stereo-plugin": "/packages/stereo-plugin/dist/index.module.js"
                 }
             }
         </script>
@@ -170,7 +170,7 @@
                                 id: 'custom-tooltip',
                                 tooltip: {
                                     content: `
-<img src="${baseUrl}sphere-small.jpg">
+<img src="${baseUrl}sphere-small.jpg" id='imgDom'>
 <article>
 <h2>Lorem ipsum</h2>
 <p>Vivamus magna. Cras in mi at felis aliquet congue. Ut a est eget ligula molestie gravida. Curabitur massa. Donec eleifend, libero at sagittis mollis,
@@ -311,7 +311,7 @@ tellus est malesuada tellus, at luctus turpis elit sit amet quam. Vivamus pretiu
                             a.push({
                                 id: 'element',
                                 element: document.querySelector('#custom-marker-element'),
-                                listContent: 'Custom element',
+                                listContent: 'Custom element1111',
                                 position: { yaw: 0.65, pitch: -0.3 },
                             });
 
@@ -513,7 +513,10 @@ tellus est malesuada tellus, at luctus turpis elit sit amet quam. Vivamus pretiu
             markers.addEventListener('marker-visibility', ({ marker, visible }) => {
                 console.log('marker-visibility', marker.id, visible);
             });
-
+            const imgDom = document.getElementById('imgDom');
+            imgDom.addEventListener('click', (e) => {
+               console.log(3333);
+            });
             window.viewer = viewer;
         </script>
     </body>

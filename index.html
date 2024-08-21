@@ -1,0 +1,304 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport"
+    content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="chrome">
+  <script src="https://unpkg.com/vconsole@latest/dist/vconsole.min.js"></script>
+  <title>多点拖拽</title>
+</head>
+<style>
+  #wrapper {
+    overflow: hidden;
+    height: 100vh;
+    width: 100vw;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+  }
+
+  #box {
+    position: relative;
+    left: 0;
+    top: 0;
+    width: 300px;
+    height: 300px;
+    border: 1px solid red;
+    background-image: url('https://jx-uav.oss-cn-shenzhen.aliyuncs.com/c017e642209fa751a7782b05839308c4.PNG');
+  }
+</style>
+
+<body>
+  <div id="wrapper">
+    <div id="box"></div>
+  </div>
+</body>
+
+<script>
+
+const info = {
+  friends: ["lilei", "kobe", "james"],
+  [Symbol.iterator]: function() {
+    let index = 0
+    return {
+      next: () => {
+        if (index < this.friends.length) {
+          return { done: false, value: this.friends[index++] }
+        } else {
+          return { done: true, value: undefined }
+        }
+      }
+    }
+  }
+}
+for (const item of info) {
+  console.log(item)
+}
+const names = ["abc", "cba", "nba"]
+
+// 获取可迭代的函数
+console.log(names[Symbol.iterator])
+// 调用可迭代函数, 获取到迭代器
+const iterator = names[Symbol.iterator]()
+console.log(iterator.next())
+console.log(iterator.next())
+console.log(iterator.next())
+console.log(iterator.next()) //
+
+class Classroom {
+  constructor(name, address, initialStudent) {
+    this.name = name
+    this.address = address
+    this.students = initialStudent || []
+  }
+
+  push(student) {
+    this.students.push(student)
+  }
+
+  [Symbol.iterator]() {
+    let index = 0
+    return {
+      next: () => {
+        if (index < this.students.length) {
+          return { done: false, value: this.students[index++] }
+        } else {
+          return { done: true }
+        }
+      },
+      return() {
+        console.log("迭代器提前终止了")
+        return { done: true }
+      }
+
+    }
+  }
+}
+const classroom1 = new Classroom("2201", "3幢", [ "cba","abc",'123'])
+// const classroom2 = new Classroom("3383", "5幢", ["james", "kobe"])
+
+for (const stu of classroom1) {
+    console.log(stu)
+  if (stu === "abc") {
+    break
+  }
+}
+// for (const stu of classroom2) {
+//   console.log(stu)
+// }
+const [name] = classroom1
+console.log(name)
+
+function* foo() {
+  const value1 = 100
+  console.log(value1)
+  yield value1
+
+  const value2 = 200
+  console.log(value2)
+  yield value2
+
+  const value3 = 300
+  console.log(value3)
+  yield value3
+}
+
+// // 返回生成器
+// const generator = foo()
+// // console.log('generator',generator);
+// const value = generator.next();
+// console.log('value===',value);
+// console.log(generator.next())
+// generator.next()
+
+function* foo2() {
+  let i = 1
+  while(true) {
+    yield i++ * 100
+  }
+}
+
+// const generator2 = foo2()
+// console.log(generator2.next())
+// console.log(generator2.next())
+// console.log(generator2.next())
+
+function* foo3() {
+  console.log("函数开始执行~")
+
+  try {
+    yield "why"
+  } catch(err) {
+    console.log("内部捕获异常:", err)
+  }
+
+  console.log("函数结束执行~")
+}
+
+// const generator3 = foo3()
+// const result = generator3.next();
+// console.log('result',result);
+// if (result !== "why") {
+//     generator3.throw("error message")
+// }
+
+// async function foo4() {
+//   console.log("异步函数foo开始~")
+//   console.log("foo function")
+//   console.log("异步函数foo结束~")
+// }
+
+// console.log("start~")
+// foo4()
+// console.log("end")
+
+
+function requestData(url) {
+  console.log("调用了requestData请求")
+  return new Promise((resolve, reject) => {
+    setTimeout(() => {
+      if (url === "coderwhy") {
+        // 发送成功了
+        resolve("一组成功数据")
+      } else {
+        // 发送失败了
+        reject("请求url错误")
+      }
+    }, 1000);
+  })
+}
+
+async function foo5() {
+  console.log("foo函数开始~")
+  const result = await requestData("coderwhy")
+  console.log("代码继续执行:", result)
+}
+
+foo5()
+
+async function foo6() {
+  console.log("foo6~")
+  const result = await 123
+  console.log("代码继续执行:foo6", result)
+}
+foo6();
+
+
+
+  function calcHypotenuse(a, b) {
+    a = parseFloat(a)
+    b = parseFloat(b)
+    return Math.sqrt(a * a + b * b);
+  }
+
+  function getCenterPoint(x2, x1, y2,y1) {
+    const x = (x2+ x1) / 2;
+    const y = (y2+ y1) / 2;
+    return { x, y };
+  }
+
+  var vConsole = new window.VConsole();
+  const box = document.querySelector("#box");
+  let startX, startY, originX, originY,
+    startX1, startX2, startY1, startY2, intDistance;
+  box.addEventListener('touchstart', (e) => {
+    e.preventDefault();
+    console.log(e.touches);
+    if (e.touches.length === 1) {
+      startX = e.touches[0].clientX;
+      startY = e.touches[0].clientY;
+      originX = parseFloat(box.style.left) || 0;
+      originY = parseFloat(box.style.top) || 0;
+    } else {
+      const [touch1, touch2] = e.touches;
+      const { clientX: startX1, clientY: startY1 } = touch1;
+      const { clientX: startX2, clientY: startY2 } = touch2;
+      intDistance = calcHypotenuse(startX2 - startX1, startY2 - startY1);
+      console.log('intDistance', intDistance)
+    }
+  })
+
+  box.addEventListener('touchmove', (e) => {
+    if (e.touches.length === 1) {
+      const left = e.touches[0].pageX
+      const top = e.touches[0].pageY
+      console.log(originX, originY)
+      box.style.left = `${originX + (left - startX)}` + 'px';
+      box.style.top = `${originY + (top - startY)}` + 'px';
+    } else {
+      const [touch1, touch2] = e.touches;
+      const { clientX: moveX1, clientY: moveY1 } = touch1;
+      const { clientX: moveX2, clientY: moveY2 } = touch2;
+      // 利用两点之间的距离 //
+      const moveDistance = calcHypotenuse(moveX2 - moveX1, moveY2 - moveY1);
+      const scale = moveDistance / intDistance;
+      // console.log('scale', moveDistance, intDistance)
+      const originPoint = getCenterPoint(moveX2,moveX1,moveY2,moveY1)
+
+      // 算出 origin
+      box.style['transform'] = `scale(${scale})`;
+      box.style['transform-origin'] = `${originPoint.x - box.offsetLeft}px ${originPoint.y - box.offsetTop}px`
+    }
+  })
+  var animal = {
+    type: "Default",
+    color: "Default",
+    getInfo: function () {
+        console.log(`Type is: ${this.type}，color is ${this.color}.`)
+    }
+  }
+  var dog = {
+    type: "Dog",
+    color: "Black",
+  }
+  dog.__proto__ = animal
+  dog.getInfo()
+  let arrIndex = [];
+  var findPeaks = function(mountain) {
+    for (var i = 0; i < mountain.length-1; i++) {
+      if (i === 0 || i === mountain.length-1) {
+        continue
+      } else {
+        if (mountain[i] > mountain[i-1] && mountain[i] > mountain[i+1]) {
+          arrIndex.push(i)
+        }
+      }
+    }
+    console.log('arrIndex',arrIndex);
+  };
+  findPeaks([1,4,3,8,5])
+
+  var isPalindrome = function(x) {
+    const arr = x.toString().split('');
+    const newArr = [...arr].reverse();
+    const originStr = arr.join('');
+    const newStr = newArr.join('');
+    return originStr === newStr
+  };
+  isPalindrome(-121)
+</script>
+
+</html>

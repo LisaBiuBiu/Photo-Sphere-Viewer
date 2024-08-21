@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <script src="https://unpkg.com/vconsole@latest/dist/vconsole.min.js"></script>
+    <title></title>
+	<style>
+		:root{
+			--foo: red;
+			--border: 1px solid green;
+		}
+		*{
+			margin: 0;
+			padding: 0;
+		}
+		body{
+			box-sizing: border-box;
+		}
+        .contain{
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 300px;
+            margin: auto;
+            height: 100vh;
+        }
+		.parent{
+			box-sizing: border-box;
+			width: 300px;
+			height: 279.157px;
+			border: var(--border);
+			transform-origin: 0 0;
+			position: relative;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: center
+		}
+		.imgStyle{
+			width: 100%;
+			height: 100%;
+		}
+	</style>
+</head>
+<body style="position: relative;">
+    <div class="contain">
+        <div class="parent">
+            <img src="https://jx-uav.oss-cn-shenzhen.aliyuncs.com/c017e642209fa751a7782b05839308c4.PNG" class="imgStyle" />
+        </div>
+    </div>
+
+	<script type="text/javascript">
+        function getElementPosition(element) {
+        var rect = element.getBoundingClientRect();
+        var scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+        var scrollLeft = window.pageXOffset || document.documentElement.scrollLeft;
+        return {
+            x: rect.left + scrollLeft,
+            y: rect.top + scrollTop
+        };
+        }
+
+        // https://juejin.cn/post/7046034846388813861
+        // var vConsole = new window.VConsole();
+        const elementPosition = getElementPosition(parentNode);
+		///////////////////////////////////////
+		let orgData = null, nowScale = 1, x, y, twoSig, leftNum = elementPosition.x, topNum = elementPosition.y,leftNumfalse, topNumfalse, nowScalefalse;
+		let SingleFinger = null, singLeft, singTop, oneSig;
+		const parentNode = document.querySelector('.parent');
+        console.log(',parentNodeparentNode',parentNode);
+
+		function getOrigin(e){
+			if(e.touches.length == 2){
+				// 双指
+				const org = {
+					x: (e.touches[0].pageX - 2 * leftNum + e.touches[1].pageX) / 2,
+					y: (e.touches[0].pageY - 2 * topNum + e.touches[1].pageY) / 2,
+					distance: Math.sqrt(Math.pow(e.touches[0].pageX - e.touches[1].pageX, 2) + Math.pow(e.touches[0].pageY - e.touches[1].pageY, 2))
+				}
+				return org;
+			}else if(e.touches.length == 1){
+				//单指
+				return {
+					x: e.touches[0].pageX,
+					y: e.touches[0].pageY
+				}
+			}
+		}
+		parentNode.addEventListener('touchstart', (e) => {
+			if(e.touches.length == 2){
+				let flag = true;
+				for(let i = 0; i < e.touches.length; i++){
+					if(e.touches[i].target.nodeName != 'IMG'){
+						flag = false;
+					}
+				}
+				if(flag) {
+					//获取双指刚放到屏幕的中心点
+					twoSig = true;
+					orgData = getOrigin(e);
+					x = getOrigin(e).x;
+					y = getOrigin(e).y;
+				}
+			}else if(e.touches.length == 1){
+				oneSig = true;
+				SingleFinger = getOrigin(e);
+			}
+		})
+		parentNode.addEventListener('touchmove', (e) => {
+			e.preventDefault();
+			if(e.touches.length == 2){
+				if(twoSig){
+					let flag = true;
+					for(let i = 0; i < e.touches.length; i++){
+						if(e.touches[i].target.nodeName != 'IMG'){
+							flag = false;
+						}
+					}
+					if(flag) {
+						// 获取新的两指中心点
+						const nowOrg = getOrigin(e);
+						const scale = nowOrg.distance / orgData.distance;
+						if(scale * nowScale < 1) return false;
+						// 获取放大后的中心点位置1
+						const obj = {
+							x: orgData.x * scale,
+							y: orgData.y * scale
+						}
+						parentNode.style.transform = `matrix(${scale * nowScale}, 0, 0, ${scale * nowScale}, ${nowOrg.x + leftNum - obj.x}, ${nowOrg.y + topNum - obj.y})`;
+						leftNumfalse = nowOrg.x + leftNum - obj.x;
+						topNumfalse = nowOrg.y + topNum - obj.y;
+						nowScalefalse = scale * nowScale;
+					}
+				}
+			}else if(e.touches.length == 1){
+				if(oneSig){
+					const nowObj = {
+						x: e.touches[0].pageX,
+						y: e.touches[0].pageY
+					}
+					parentNode.style.transform = `matrix(${nowScalefalse}, 0, 0, ${nowScalefalse}, ${nowObj.x - SingleFinger.x + leftNum}, ${nowObj.y - SingleFinger.y + topNum})`;
+					leftNumfalse = nowObj.x - SingleFinger.x + leftNum;
+					topNumfalse = nowObj.y - SingleFinger.y + topNum;
+				}
+			}
+		})
+		parentNode.addEventListener('touchend', (e) => {
+			parentNode.style.transform = `matrix(${nowScalefalse}, 0, 0, ${nowScalefalse}, ${leftNumfalse}, ${topNumfalse})`;
+			leftNum = leftNumfalse;
+			topNum = topNumfalse;
+			nowScale = nowScalefalse;
+		})
+	</script>
+</body>
+</html>
+

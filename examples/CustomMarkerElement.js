@@ -26,7 +26,7 @@ export class CustomMarkerElement extends HTMLElement {
         this.tooltip.appendChild(this.legend);
 
         button.addEventListener('mouseleave', () => {
-            this.tooltip.classList.add('hiding');
+            // this.tooltip.classList.add('hiding');
         });
 
         dom.addEventListener('animationend', () => {
@@ -35,6 +35,7 @@ export class CustomMarkerElement extends HTMLElement {
     }
 
     updateMarker({ marker, position, viewerPosition, zoomLevel, viewerSize }) {
+        console.log('updateMarker', marker, position, viewerPosition, zoomLevel, viewerSize);
         this.legend.innerText = `Params
 position: ${position.x}px x ${position.y}px
 viewerPosition: ${this.fmt.format(viewerPosition.yaw)}rad / ${this.fmt.format(viewerPosition.pitch)}rad

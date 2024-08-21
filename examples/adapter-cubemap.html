@@ -5,7 +5,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <title>PhotoSphereViewer - cubemap demo</title>
 
-        <link rel="stylesheet" href="/dist/core/index.css" />
+        <link rel="stylesheet" href="/packages/core/dist/index.css" />
         <link rel="stylesheet" href="style.css" />
     </head>
     <body>
@@ -15,8 +15,8 @@
             {
                 "imports": {
                     "three": "/node_modules/three/build/three.module.js",
-                    "@photo-sphere-viewer/core": "/dist/core/index.module.js",
-                    "@photo-sphere-viewer/cubemap-adapter": "/dist/cubemap-adapter/index.module.js"
+                    "@photo-sphere-viewer/core": "/packages/core/dist/index.module.js",
+                    "@photo-sphere-viewer/cubemap-adapter": "/packages/cubemap-adapter/dist/index.module.js"
                 }
             }
         </script>
@@ -29,14 +29,15 @@
 
             const panos = [
                 {
-                    url: {
-                        left: baseUrl + 'cubemap/px.jpg',
-                        front: baseUrl + 'cubemap/nz.jpg',
-                        right: baseUrl + 'cubemap/nx.jpg',
-                        back: baseUrl + 'cubemap/pz.jpg',
-                        top: baseUrl + 'cubemap/py.jpg',
-                        bottom: baseUrl + 'cubemap/ny.jpg',
-                    },
+                    url:'https://jx-uav.oss-cn-shenzhen.aliyuncs.com/8a09c2c46ceb40ccae63afc44886d80c.jpg',
+                    // url: {
+                    //     left: baseUrl + 'cubemap/px.jpg',
+                    //     front: baseUrl + 'cubemap/nz.jpg',
+                    //     right: baseUrl + 'cubemap/nx.jpg',
+                    //     back: baseUrl + 'cubemap/pz.jpg',
+                    //     top: baseUrl + 'cubemap/py.jpg',
+                    //     bottom: baseUrl + 'cubemap/ny.jpg',
+                    // },
                     // url: {
                     //     type: 'stripe',
                     //     path: baseUrl + 'cubemap/stripe.jpg',
@@ -48,23 +49,24 @@
                     caption: 'Parc national du Mercantour <b>&copy; Damien Sorel</b>',
                 },
                 {
-                    url: [
-                        baseUrl + 'cubemap-test/1.png',
-                        baseUrl + 'cubemap-test/2.png',
-                        baseUrl + 'cubemap-test/3.png',
-                        baseUrl + 'cubemap-test/4.png',
-                        baseUrl + 'cubemap-test/5.png',
-                        baseUrl + 'cubemap-test/6.png',
-                    ],
+                    url:'https://jx-uav.oss-cn-shenzhen.aliyuncs.com/65b3b320608849ee8a304dcd3e5a97e1.jpg',
+                    // url: [
+                    //     baseUrl + 'cubemap-test/1.png',
+                    //     baseUrl + 'cubemap-test/2.png',
+                    //     baseUrl + 'cubemap-test/3.png',
+                    //     baseUrl + 'cubemap-test/4.png',
+                    //     baseUrl + 'cubemap-test/5.png',
+                    //     baseUrl + 'cubemap-test/6.png',
+                    // ],
                     caption: 'Test cubemap',
                 },
             ];
 
             const viewer = new Viewer({
                 container: 'photosphere',
-                adapter: [CubemapAdapter, {
-                    // flipTopBottom: true,
-                }],
+                // adapter: [CubemapAdapter, {
+                //     // flipTopBottom: true,
+                // }],
                 panorama: panos[0].url,
                 caption: panos[0].caption,
                 loadingImg: baseUrl + 'loader.gif',
@@ -84,6 +86,8 @@
                                     pitch: 0,
                                     zoom: 50,
                                     caption: panos[i].caption,
+                                    showLoader: false,
+                                    // transition: false
                                 });
                             };
                         })(),
